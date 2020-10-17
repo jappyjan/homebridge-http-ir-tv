@@ -20,10 +20,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f563ce23-2ee8-4970-ab6d-103db4c305da" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/config.schema.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.schema.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/settings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/settings.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +57,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1602879677953</updated>
-      <workItem from="1602879679785" duration="1921000" />
+      <workItem from="1602879679785" duration="1989000" />
     </task>
     <servers />
   </component>
