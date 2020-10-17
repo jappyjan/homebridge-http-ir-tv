@@ -10,8 +10,7 @@ import {
 } from 'homebridge';
 
 import {PLATFORM_NAME, PLUGIN_NAME} from './settings';
-import {HttpIrTvAccessory} from './HttpIrTvAccessory';
-import {DeviceConfig} from './types';
+import {HttpIrTvAccessory, TelevisionDevice} from './HttpIrTvAccessory';
 
 export class HttpIrTvPlugin implements DynamicPlatformPlugin {
     public readonly Service: typeof Service = this.api.hap.Service;
@@ -58,7 +57,7 @@ export class HttpIrTvPlugin implements DynamicPlatformPlugin {
       // EXAMPLE ONLY
       // A real plugin you would discover accessories from the local network, cloud services
       // or a user-defined array in the platform config.
-      const devices: DeviceConfig[] = this.config.devices as DeviceConfig[];
+      const devices: TelevisionDevice[] = this.config.devices as TelevisionDevice[];
 
       // loop over the discovered devices and register each one if it has not already been registered
       for (const device of devices) {
@@ -66,7 +65,7 @@ export class HttpIrTvPlugin implements DynamicPlatformPlugin {
         // something globally unique, but constant, for example, the device serial
         // number or MAC address
         const uuid = this.api.hap.uuid.generate(
-          `http-ir-tv_${device.ip}:${device.port}${device.path}_${device.name}`,
+          `http-ir-tv_${device.ip}:${device.port}_${device.name}`,
         );
 
         // see if an accessory with the same uuid has already been registered and restored from

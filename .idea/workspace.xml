@@ -20,7 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f563ce23-2ee8-4970-ab6d-103db4c305da" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HttpIrTvAccessory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/HttpIrTvAccessory.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/HttpIrTvPlugin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/HttpIrTvPlugin.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/settings.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/settings.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +65,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1602879677953</updated>
-      <workItem from="1602879679785" duration="15188000" />
+      <workItem from="1602879679785" duration="15705000" />
     </task>
     <servers />
   </component>
@@ -91,6 +96,10 @@
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
     <state x="629" y="186" key="RollbackChangesDialog/0.0.1792.1120@0.0.1792.1120" timestamp="1602950463479" />
+    <state x="595" y="299" width="602" height="522" key="find.popup" timestamp="1602970324214">
+      <screen x="0" y="0" width="1792" height="1120" />
+    </state>
+    <state x="595" y="299" width="602" height="522" key="find.popup/0.0.1792.1120@0.0.1792.1120" timestamp="1602970324214" />
     <state x="561" y="251" width="670" height="676" key="search.everywhere.popup" timestamp="1602969501835">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>

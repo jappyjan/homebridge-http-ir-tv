@@ -9,7 +9,7 @@ import {
 
 import {HttpIrTvPlugin} from './HttpIrTvPlugin';
 
-interface TelevisionDevice {
+export interface TelevisionDevice {
     'name': string;
     'tv-manufacturer': string;
     'tv-model': string;
