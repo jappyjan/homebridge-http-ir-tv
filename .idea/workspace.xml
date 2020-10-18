@@ -20,9 +20,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f563ce23-2ee8-4970-ab6d-103db4c305da" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/SocketClient.d.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/SocketClient.d.ts.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/SocketClient.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/SocketClient.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/SocketClient.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.npmignore" beforeDir="false" afterPath="$PROJECT_DIR$/.npmignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.schema.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.schema.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/HttpIrTvAccessory.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/HttpIrTvAccessory.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/HttpIrTvAccessory.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/HttpIrTvAccessory.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/HttpIrTvAccessory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/HttpIrTvAccessory.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +74,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1602879677953</updated>
-      <workItem from="1602879679785" duration="16496000" />
+      <workItem from="1602879679785" duration="27374000" />
     </task>
     <servers />
   </component>
@@ -81,10 +93,10 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="752" y="450" key="#ESLint" timestamp="1602966879081">
+    <state x="752" y="450" key="#ESLint" timestamp="1603026772968">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>
-    <state x="752" y="450" key="#ESLint/0.0.1792.1120@0.0.1792.1120" timestamp="1602966879081" />
+    <state x="752" y="450" key="#ESLint/0.0.1792.1120@0.0.1792.1120" timestamp="1603026772968" />
     <state x="179" y="101" key="DiffContextDialog" timestamp="1602950462777">
       <screen x="0" y="0" width="1792" height="1120" />
     </state>

@@ -1,13 +1,14 @@
 import {
   Categories,
+  CharacteristicGetCallback,
   CharacteristicSetCallback,
   CharacteristicValue,
   PlatformAccessory,
   Service,
-  CharacteristicGetCallback,
 } from 'homebridge';
 
 import {HttpIrTvPlugin} from './HttpIrTvPlugin';
+import SocketClient from './SocketClient';
 
 export interface TelevisionDevice {
     'name': string;
@@ -16,6 +17,7 @@ export interface TelevisionDevice {
     'tv-serial': string;
     'ip': string;
     'port': number;
+    'path': string;
     'codeType': string;
     'codes': {
         'power': string;
@@ -52,6 +54,7 @@ export class HttpIrTvAccessory {
     private speakerService?: Service;
     private configuredRemoteKeys: number[] = [];
     private readonly device: TelevisionDevice;
+    private readonly socketClient: SocketClient;
 
     private state = {
       mute: false,
@@ -61,11 +64,21 @@ export class HttpIrTvAccessory {
         private readonly platform: HttpIrTvPlugin,
         private readonly accessory: PlatformAccessory,
     ) {
+      this.platform.log.debug('Inside Accessory class');
       accessory.category = Categories.TELEVISION;
 
       this.device = accessory.context.device;
+
+      this.socketClient = new SocketClient(
+        this.device.ip,
+        this.device.port,
+        this.device.path,
+        this.device.codeType,
+        this.platform.log,
+      );
+
       this.televisionService = this.accessory.getService(this.platform.Service.Television) ||
-        this.accessory.addService(this.platform.Service.Television, 'Television', 'Television');
+            this.accessory.addService(this.platform.Service.Television, 'Television', 'Television');
 
       this.configureMetaCharacteristics();
 
@@ -78,20 +91,21 @@ export class HttpIrTvAccessory {
         this.configureVolumeKeys();
       }
 
-      this.televisionService
-        .getCharacteristic(this.platform.Characteristic.ActiveIdentifier)!
-        .on('set', (newValue: CharacteristicValue, callback: CharacteristicSetCallback) => {
-          this.platform.log.debug('set Active Identifier => setNewValue: ' + newValue);
-          callback(null);
-        });
+        this.televisionService
+          .getCharacteristic(this.platform.Characteristic.ActiveIdentifier)!
+          .on('set', (newValue: CharacteristicValue, callback: CharacteristicSetCallback) => {
+            this.platform.log.debug('set Active Identifier => setNewValue: ' + newValue);
+            callback(null);
+          });
 
-      let isActive = false;
-      setInterval(() => {
-        isActive = !isActive;
+      /*
+        let isActive = false;
+        setInterval(() => {
+          isActive = !isActive;
 
-        this.platform.log.debug('Triggering television active state:', isActive);
-        this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, isActive);
-      }, 10000);
+          this.platform.log.debug('Triggering television active state:', isActive);
+          this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, isActive);
+        }, 10000);*/
     }
 
     configureMetaCharacteristics() {
@@ -144,7 +158,7 @@ export class HttpIrTvAccessory {
     configureVolumeKeys() {
       this.platform.log.debug('Adding speaker service');
       this.speakerService =
-            this.accessory.getService(this.platform.Service.TelevisionSpeaker) ??
+            this.accessory.getService(this.platform.Service.TelevisionSpeaker) ||
             this.accessory.addService(this.platform.Service.TelevisionSpeaker);
 
       // set the volume control type
@@ -155,7 +169,7 @@ export class HttpIrTvAccessory {
         )
         .setCharacteristic(
           this.platform.Characteristic.VolumeControlType,
-          this.platform.Characteristic.VolumeControlType.RELATIVE,
+          this.platform.Characteristic.VolumeControlType.ABSOLUTE,
         );
 
       if (this.device.codes.volume.mute) {
@@ -178,6 +192,10 @@ export class HttpIrTvAccessory {
       callback: CharacteristicSetCallback,
     ): void {
       this.platform.log.debug('setMute called with: ' + value);
+
+      this.socketClient!.sendCommand('IR-SEND', this.device.codes.volume.mute)
+        .catch((e) => this.platform.log.error(e));
+
       this.state.mute = !this.state.mute;
       callback(null);
     }
@@ -201,6 +219,7 @@ export class HttpIrTvAccessory {
         command = this.device.codes.volume.down;
       }
 
+      this.socketClient.sendCommand('IR-SEND', command).catch((e) => this.platform.log.error(e));
       this.platform.log.debug('Sending code: ' + command);
       callback(null);
     }
@@ -208,6 +227,8 @@ export class HttpIrTvAccessory {
     onPowerTogglePress(value: CharacteristicValue, callback: CharacteristicSetCallback) {
       this.platform.log.debug('Set Characteristic On ->', value);
 
+      this.socketClient.sendCommand('IR-SEND', this.device.codes.power)
+        .catch((e) => this.platform.log.error(e));
       // you must call the callback function
       callback(null);
     }
@@ -217,12 +238,32 @@ export class HttpIrTvAccessory {
 
       if (
         !this.device.codes.keys ||
-          !((value as string) in this.configuredRemoteKeys)
+        !this.configuredRemoteKeys.find((item) => item === value)
       ) {
+        this.platform.log.error(`Remote Key ${value} not configured in this.configuredRemoteKeys`);
+        this.platform.log.debug(JSON.stringify(this.configuredRemoteKeys, null, 4));
         callback(new Error(`Remote-Key "${value}" not configured`));
+        return;
       }
 
-      this.platform.log.debug('Remote-Key is configured!');
+      let command = '';
+      Object.keys(this.platform.Characteristic.RemoteKey as unknown as { [key: string]: number }).forEach(
+        (keyOfRemoteKeyObject) => {
+          if (this.platform.Characteristic.RemoteKey[keyOfRemoteKeyObject] === value) {
+            this.platform.log.debug(`Remote-Key ${value} maps to ${keyOfRemoteKeyObject}`);
+            command = this.device.codes.keys[keyOfRemoteKeyObject];
+          }
+        },
+      );
+
+      if (!command) {
+        this.platform.log.debug(JSON.stringify(Object.keys(this.platform.Characteristic.RemoteKey), null, 4));
+        this.platform.log.error(`Remote Key ${value} not configured`);
+        callback(new Error(`Remote-Key ${value} not configured`));
+        return;
+      }
+
+      this.socketClient.sendCommand('IR-SEND', command).catch((e) => this.platform.log.error(e));
 
       callback(null);
     }

@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HttpIrTvAccessory = void 0;
+const SocketClient_1 = __importDefault(require("./SocketClient"));
 /**
  * Platform Accessory
  * An instance of this class is created for each accessory your platform registers
@@ -14,8 +18,10 @@ class HttpIrTvAccessory {
         this.state = {
             mute: false,
         };
+        this.platform.log.debug('Inside Accessory class');
         accessory.category = 31 /* TELEVISION */;
         this.device = accessory.context.device;
+        this.socketClient = new SocketClient_1.default(this.device.ip, this.device.port, this.device.path, this.device.codeType, this.platform.log);
         this.televisionService = this.accessory.getService(this.platform.Service.Television) ||
             this.accessory.addService(this.platform.Service.Television, 'Television', 'Television');
         this.configureMetaCharacteristics();
@@ -31,12 +37,14 @@ class HttpIrTvAccessory {
             this.platform.log.debug('set Active Identifier => setNewValue: ' + newValue);
             callback(null);
         });
-        let isActive = false;
-        setInterval(() => {
+        /*
+          let isActive = false;
+          setInterval(() => {
             isActive = !isActive;
+  
             this.platform.log.debug('Triggering television active state:', isActive);
             this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, isActive);
-        }, 10000);
+          }, 10000);*/
     }
     configureMetaCharacteristics() {
         this.accessory.getService(this.platform.Service.AccessoryInformation)
@@ -59,13 +67,14 @@ class HttpIrTvAccessory {
         });
     }
     configureVolumeKeys() {
-        var _a;
         this.platform.log.debug('Adding speaker service');
-        this.speakerService = (_a = this.accessory.getService(this.platform.Service.TelevisionSpeaker)) !== null && _a !== void 0 ? _a : this.accessory.addService(this.platform.Service.TelevisionSpeaker);
+        this.speakerService =
+            this.accessory.getService(this.platform.Service.TelevisionSpeaker) ||
+                this.accessory.addService(this.platform.Service.TelevisionSpeaker);
         // set the volume control type
         this.speakerService
             .setCharacteristic(this.platform.Characteristic.Active, this.platform.Characteristic.Active.ACTIVE)
-            .setCharacteristic(this.platform.Characteristic.VolumeControlType, this.platform.Characteristic.VolumeControlType.RELATIVE);
+            .setCharacteristic(this.platform.Characteristic.VolumeControlType, this.platform.Characteristic.VolumeControlType.ABSOLUTE);
         if (this.device.codes.volume.mute) {
             this.speakerService
                 .getCharacteristic(this.platform.Characteristic.Mute)
@@ -80,6 +89,8 @@ class HttpIrTvAccessory {
     }
     setMute(value, callback) {
         this.platform.log.debug('setMute called with: ' + value);
+        this.socketClient.sendCommand('IR-SEND', this.device.codes.volume.mute)
+            .catch((e) => this.platform.log.error(e));
         this.state.mute = !this.state.mute;
         callback(null);
     }
@@ -93,21 +104,40 @@ class HttpIrTvAccessory {
         if (value === this.platform.Characteristic.VolumeSelector.DECREMENT) {
             command = this.device.codes.volume.down;
         }
+        this.socketClient.sendCommand('IR-SEND', command).catch((e) => this.platform.log.error(e));
         this.platform.log.debug('Sending code: ' + command);
         callback(null);
     }
     onPowerTogglePress(value, callback) {
         this.platform.log.debug('Set Characteristic On ->', value);
+        this.socketClient.sendCommand('IR-SEND', this.device.codes.power)
+            .catch((e) => this.platform.log.error(e));
         // you must call the callback function
         callback(null);
     }
     onRemoteKeyPress(value, callback) {
         this.platform.log.debug('Remote Key Pressed ' + value);
         if (!this.device.codes.keys ||
-            !(value in this.configuredRemoteKeys)) {
+            !this.configuredRemoteKeys.find((item) => item === value)) {
+            this.platform.log.error(`Remote Key ${value} not configured in this.configuredRemoteKeys`);
+            this.platform.log.debug(JSON.stringify(this.configuredRemoteKeys, null, 4));
             callback(new Error(`Remote-Key "${value}" not configured`));
+            return;
         }
-        this.platform.log.debug('Remote-Key is configured!');
+        let command = '';
+        Object.keys(this.platform.Characteristic.RemoteKey).forEach((keyOfRemoteKeyObject) => {
+            if (this.platform.Characteristic.RemoteKey[keyOfRemoteKeyObject] === value) {
+                this.platform.log.debug(`Remote-Key ${value} maps to ${keyOfRemoteKeyObject}`);
+                command = this.device.codes.keys[keyOfRemoteKeyObject];
+            }
+        });
+        if (!command) {
+            this.platform.log.debug(JSON.stringify(Object.keys(this.platform.Characteristic.RemoteKey), null, 4));
+            this.platform.log.error(`Remote Key ${value} not configured`);
+            callback(new Error(`Remote-Key ${value} not configured`));
+            return;
+        }
+        this.socketClient.sendCommand('IR-SEND', command).catch((e) => this.platform.log.error(e));
         callback(null);
     }
 }

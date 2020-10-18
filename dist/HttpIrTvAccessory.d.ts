@@ -1,4 +1,4 @@
-import { CharacteristicSetCallback, CharacteristicValue, PlatformAccessory, CharacteristicGetCallback } from 'homebridge';
+import { CharacteristicGetCallback, CharacteristicSetCallback, CharacteristicValue, PlatformAccessory } from 'homebridge';
 import { HttpIrTvPlugin } from './HttpIrTvPlugin';
 export interface TelevisionDevice {
     'name': string;
@@ -7,6 +7,7 @@ export interface TelevisionDevice {
     'tv-serial': string;
     'ip': string;
     'port': number;
+    'path': string;
     'codeType': string;
     'codes': {
         'power': string;
@@ -44,6 +45,7 @@ export declare class HttpIrTvAccessory {
     private speakerService?;
     private configuredRemoteKeys;
     private readonly device;
+    private readonly socketClient;
     private state;
     constructor(platform: HttpIrTvPlugin, accessory: PlatformAccessory);
     configureMetaCharacteristics(): void;

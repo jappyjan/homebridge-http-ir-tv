@@ -44,6 +44,12 @@
               "required": true,
               "default": 80
             },
+            "path": {
+              "title": "ESP8266 WS Path",
+              "type": "string",
+              "required": true,
+              "default": "/ws"
+            },
             "codeType": {
               "type": "string",
               "title": "IR Code Type",
