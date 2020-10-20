@@ -110,14 +110,6 @@ export class HttpIrTvAccessory {
           this.platform.log.debug('Updating Television Active State:', state);
           this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, state);
         });
-      /*
-        let isActive = false;
-        setInterval(() => {
-          isActive = !isActive;
-
-          this.platform.log.debug('Triggering television active state:', isActive);
-          this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, isActive);
-        }, 10000);*/
     }
 
     configureMetaCharacteristics() {
@@ -205,7 +197,7 @@ export class HttpIrTvAccessory {
     ): void {
       this.platform.log.debug('setMute called with: ' + value);
 
-      this.socketClient!.sendCommand('IR-SEND', this.device.codes.volume.mute)
+      this.socketClient.sendCommand('IR-SEND', this.device.codes.volume.mute)
         .catch((e) => this.platform.log.error(e));
 
       this.state.mute = !this.state.mute;
@@ -231,7 +223,8 @@ export class HttpIrTvAccessory {
         command = this.device.codes.volume.down;
       }
 
-      this.socketClient.sendCommand('IR-SEND', command).catch((e) => this.platform.log.error(e));
+      this.socketClient.sendCommand('IR-SEND', command)
+        .catch((e) => this.platform.log.error(e));
       this.platform.log.debug('Sending code: ' + command);
       callback(null);
     }
@@ -275,7 +268,8 @@ export class HttpIrTvAccessory {
         return;
       }
 
-      this.socketClient.sendCommand('IR-SEND', command).catch((e) => this.platform.log.error(e));
+      this.socketClient.sendCommand('IR-SEND', command)
+        .catch((e) => this.platform.log.error(e));
 
       callback(null);
     }

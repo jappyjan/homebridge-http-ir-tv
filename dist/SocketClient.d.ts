@@ -9,7 +9,7 @@ export default class SocketClient {
     private listeners;
     constructor(sockeHost: string, socketPort: number, irCodeType: string, logger: Logger);
     private connect;
-    addMessageListener(listenerId: string, callback: (msg: string) => any): void;
+    addMessageListener(listenerId: string, callback: (msg: string) => unknown): void;
     removeMessageListener(listenerId: string): void;
     private handleMessage;
     sendCommand(command: string, payload?: string): Promise<unknown>;
