@@ -7,7 +7,6 @@ export interface TelevisionDevice {
     'tv-serial': string;
     'ip': string;
     'port': number;
-    'path': string;
     'codeType': string;
     'codes': {
         'power': string;

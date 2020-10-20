@@ -2,13 +2,15 @@ import { Logger } from 'homebridge';
 export default class SocketClient {
     private readonly sockeHost;
     private readonly socketPort;
-    private readonly socketPath;
     private readonly irCodeType;
     private readonly logger;
     private client;
     private connection;
-    constructor(sockeHost: string, socketPort: number, socketPath: string, irCodeType: string, logger: Logger);
+    private listeners;
+    constructor(sockeHost: string, socketPort: number, irCodeType: string, logger: Logger);
     private connect;
+    addMessageListener(listenerId: string, callback: (msg: string) => any): void;
+    removeMessageListener(listenerId: string): void;
     private handleMessage;
     sendCommand(command: string, payload?: string): Promise<unknown>;
 }

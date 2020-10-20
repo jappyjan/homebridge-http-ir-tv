@@ -2,17 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const websocket_1 = require("websocket");
 class SocketClient {
-    constructor(sockeHost, socketPort, socketPath, irCodeType, logger) {
+    constructor(sockeHost, socketPort, irCodeType, logger) {
         this.sockeHost = sockeHost;
         this.socketPort = socketPort;
-        this.socketPath = socketPath;
         this.irCodeType = irCodeType;
         this.logger = logger;
         this.client = null;
         this.connection = null;
-        if (this.socketPath.startsWith('/')) {
-            this.socketPath = this.socketPath.substr(1);
-        }
+        this.listeners = [];
         this.logger.debug('Inside SocketClient Class');
         this.connect();
     }
@@ -42,13 +39,20 @@ class SocketClient {
             throw err;
         });
         this.logger.debug('Connecting to Socket Server...');
-        const wssServerAddress = `ws://${this.sockeHost}:${this.socketPort}/${this.socketPath}`;
+        const wssServerAddress = `ws://${this.sockeHost}:${this.socketPort}`;
         this.logger.debug(`Server: ${wssServerAddress}`);
         this.client.connect(wssServerAddress);
+    }
+    addMessageListener(listenerId, callback) {
+        this.listeners.push({ id: listenerId, callback });
+    }
+    removeMessageListener(listenerId) {
+        this.listeners = this.listeners.filter((listener) => listener.id !== listenerId);
     }
     handleMessage(msg) {
         const [command, payload] = msg.split(';');
         this.logger.debug('received message: ' + JSON.stringify({ command, payload }));
+        this.listeners.forEach((listener) => listener.callback(msg));
     }
     sendCommand(command, payload = '') {
         if (command === 'IR-SEND') {

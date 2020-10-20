@@ -17,7 +17,6 @@ export interface TelevisionDevice {
     'tv-serial': string;
     'ip': string;
     'port': number;
-    'path': string;
     'codeType': string;
     'codes': {
         'power': string;
@@ -72,7 +71,6 @@ export class HttpIrTvAccessory {
       this.socketClient = new SocketClient(
         this.device.ip,
         this.device.port,
-        this.device.path,
         this.device.codeType,
         this.platform.log,
       );
@@ -98,6 +96,20 @@ export class HttpIrTvAccessory {
             callback(null);
           });
 
+
+        this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, false);
+        this.socketClient.addMessageListener('POWER_STATE', (msg) => {
+          this.platform.log.debug('received message');
+          this.platform.log.debug(msg);
+          if (!msg.startsWith('POWER_STATE;')) {
+            return;
+          }
+
+          const [, stateString] = msg.split(';');
+          const state = stateString === 'on';
+          this.platform.log.debug('Updating Television Active State:', state);
+          this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, state);
+        });
       /*
         let isActive = false;
         setInterval(() => {

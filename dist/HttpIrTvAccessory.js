@@ -21,7 +21,7 @@ class HttpIrTvAccessory {
         this.platform.log.debug('Inside Accessory class');
         accessory.category = 31 /* TELEVISION */;
         this.device = accessory.context.device;
-        this.socketClient = new SocketClient_1.default(this.device.ip, this.device.port, this.device.path, this.device.codeType, this.platform.log);
+        this.socketClient = new SocketClient_1.default(this.device.ip, this.device.port, this.device.codeType, this.platform.log);
         this.televisionService = this.accessory.getService(this.platform.Service.Television) ||
             this.accessory.addService(this.platform.Service.Television, 'Television', 'Television');
         this.configureMetaCharacteristics();
@@ -36,6 +36,18 @@ class HttpIrTvAccessory {
             .on('set', (newValue, callback) => {
             this.platform.log.debug('set Active Identifier => setNewValue: ' + newValue);
             callback(null);
+        });
+        this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, false);
+        this.socketClient.addMessageListener('POWER_STATE', (msg) => {
+            this.platform.log.debug('received message');
+            this.platform.log.debug(msg);
+            if (!msg.startsWith('POWER_STATE;')) {
+                return;
+            }
+            const [, stateString] = msg.split(';');
+            const state = stateString === 'on';
+            this.platform.log.debug('Updating Television Active State:', state);
+            this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, state);
         });
         /*
           let isActive = false;

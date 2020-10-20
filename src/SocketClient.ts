@@ -1,21 +1,18 @@
 import {client as WssClient, connection as WssConnection} from 'websocket';
 import {Logger} from 'homebridge';
+import EventEmitter from 'events';
 
 export default class SocketClient {
     private client: WssClient | null = null;
     private connection: WssConnection | null = null;
+    private listeners: Array<{id: string; callback: (msg: string) => any}> = [];
 
     constructor(
         private readonly sockeHost: string,
         private readonly socketPort: number,
-        private readonly socketPath: string,
         private readonly irCodeType: string,
         private readonly logger: Logger,
     ) {
-      if (this.socketPath.startsWith('/')) {
-        this.socketPath = this.socketPath.substr(1);
-      }
-
       this.logger.debug('Inside SocketClient Class');
       this.connect();
     }
@@ -28,7 +25,6 @@ export default class SocketClient {
         this.connection = connection;
 
         this.logger.debug('Adding connection listeners...');
-
 
         this.connection.on('error', (error) => {
           this.logger.error('WSS Connection Error');
@@ -55,15 +51,26 @@ export default class SocketClient {
       });
 
       this.logger.debug('Connecting to Socket Server...');
-      const wssServerAddress = `ws://${this.sockeHost}:${this.socketPort}/${this.socketPath}`;
+      const wssServerAddress = `ws://${this.sockeHost}:${this.socketPort}`;
       this.logger.debug(`Server: ${wssServerAddress}`);
 
       this.client.connect(wssServerAddress);
     }
 
+    public addMessageListener(listenerId: string, callback: (msg: string) => any) {
+      this.listeners.push({id: listenerId, callback});
+    }
+
+    public removeMessageListener(listenerId: string) {
+      this.listeners = this.listeners.filter(
+        (listener) => listener.id !== listenerId,
+      );
+    }
+
     private handleMessage(msg: string) {
       const [command, payload] = msg.split(';');
       this.logger.debug('received message: ' + JSON.stringify({command, payload}));
+      this.listeners.forEach((listener) => listener.callback(msg));
     }
 
     public sendCommand(command: string, payload = '') {
