@@ -54,6 +54,7 @@ export declare class HttpIrTvAccessory {
     getMute(callback: CharacteristicGetCallback): void;
     setVolume(value: CharacteristicValue, callback: CharacteristicSetCallback): void;
     onPowerTogglePress(value: CharacteristicValue, callback: CharacteristicSetCallback): void;
+    verifyPowerChange(expectedPowerState: boolean): Promise<void>;
     onRemoteKeyPress(value: CharacteristicValue, callback: CharacteristicSetCallback): void;
 }
 //# sourceMappingURL=HttpIrTvAccessory.d.ts.map

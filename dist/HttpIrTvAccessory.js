@@ -5,6 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HttpIrTvAccessory = void 0;
 const SocketClient_1 = __importDefault(require("./SocketClient"));
+var SOCKET_COMMANDS;
+(function (SOCKET_COMMANDS) {
+    SOCKET_COMMANDS["RECEIVING_POWER_STATE"] = "POWER_STATE;";
+})(SOCKET_COMMANDS || (SOCKET_COMMANDS = {}));
 /**
  * Platform Accessory
  * An instance of this class is created for each accessory your platform registers
@@ -41,7 +45,7 @@ class HttpIrTvAccessory {
         this.socketClient.addMessageListener('POWER_STATE', (msg) => {
             this.platform.log.debug('received message');
             this.platform.log.debug(msg);
-            if (!msg.startsWith('POWER_STATE;')) {
+            if (!msg.startsWith(SOCKET_COMMANDS.RECEIVING_POWER_STATE)) {
                 return;
             }
             const [, stateString] = msg.split(';');
@@ -119,6 +123,24 @@ class HttpIrTvAccessory {
             .catch((e) => this.platform.log.error(e));
         // you must call the callback function
         callback(null);
+        setTimeout(() => this.verifyPowerChange(value), 3000);
+    }
+    async verifyPowerChange(expectedPowerState) {
+        const listenerId = `temp-listener--power-expectation--${new Date().getTime()}-${Math.random()}`;
+        const currentPowerState = await new Promise((resolve) => {
+            this.socketClient.addMessageListener(listenerId, (msg) => {
+                if (!msg.startsWith(SOCKET_COMMANDS.RECEIVING_POWER_STATE)) {
+                    return;
+                }
+                const [, stateString] = msg.split(';');
+                const state = stateString === 'on';
+                resolve(state);
+            });
+        });
+        if (currentPowerState !== expectedPowerState) {
+            this.socketClient.sendCommand('IR-SEND', this.device.codes.power)
+                .catch((e) => this.platform.log.error(e));
+        }
     }
     onRemoteKeyPress(value, callback) {
         this.platform.log.debug('Remote Key Pressed ' + value);

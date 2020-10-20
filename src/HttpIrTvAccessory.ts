@@ -241,7 +241,7 @@ export class HttpIrTvAccessory {
       // you must call the callback function
       callback(null);
 
-      setTimeout(() => this.verifyPowerChange(value as boolean), 3000);
+      setTimeout(() => this.verifyPowerChange(value as boolean), 10000);
     }
 
     async verifyPowerChange(expectedPowerState: boolean) {
