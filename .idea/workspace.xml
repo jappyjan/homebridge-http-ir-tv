@@ -20,8 +20,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f563ce23-2ee8-4970-ab6d-103db4c305da" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/HttpIrTvAccessory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/HttpIrTvAccessory.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -67,7 +65,7 @@
       <workItem from="1603178237347" duration="688000" />
       <workItem from="1603207203340" duration="1261000" />
       <workItem from="1603215673640" duration="58000" />
-      <workItem from="1603221562170" duration="1001000" />
+      <workItem from="1603221562170" duration="1035000" />
     </task>
     <servers />
   </component>

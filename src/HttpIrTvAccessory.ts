@@ -243,7 +243,7 @@ export class HttpIrTvAccessory {
       let timedOut = false;
       const timeoutIdentifier = setTimeout(() => {
         timedOut = true;
-        callback('Timeout');
+        callback(new Error('Timeout'));
       }, 20000);
 
       const currentPowerState = await new Promise((resolve) => {
