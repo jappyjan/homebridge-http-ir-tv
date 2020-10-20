@@ -233,19 +233,19 @@ export class HttpIrTvAccessory {
       callback(null);
     }
 
-    onPowerTogglePress(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+    async onPowerTogglePress(value: CharacteristicValue, callback: CharacteristicSetCallback) {
       this.platform.log.debug('Set Characteristic On ->', value);
 
       this.socketClient.sendCommand('IR-SEND', this.device.codes.power)
         .catch((e) => this.platform.log.error(e));
-      // you must call the callback function
-      callback(null);
 
-      setTimeout(() => this.verifyPowerChange(value as boolean), 10000);
-    }
-
-    async verifyPowerChange(expectedPowerState: boolean) {
       const listenerId = `temp-listener--power-expectation--${new Date().getTime()}-${Math.random()}`;
+      let timedOut = false;
+      const timeoutIdentifier = setTimeout(() => {
+        timedOut = true;
+        callback('Timeout');
+      }, 20000);
+
       const currentPowerState = await new Promise((resolve) => {
         this.socketClient.addMessageListener(listenerId, (msg: string) => {
           if (!msg.startsWith(SOCKET_COMMANDS.RECEIVING_POWER_STATE)) {
@@ -258,9 +258,17 @@ export class HttpIrTvAccessory {
         });
       });
 
-      if (currentPowerState !== expectedPowerState) {
-        this.socketClient.sendCommand('IR-SEND', this.device.codes.power)
-          .catch((e) => this.platform.log.error(e));
+      clearTimeout(timeoutIdentifier);
+      if (timedOut) {
+        return;
+      }
+
+      if (currentPowerState !== value) {
+        await this.onPowerTogglePress(value, (err) => {
+          callback(err);
+        });
+      } else {
+        callback(null);
       }
     }
 

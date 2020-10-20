@@ -123,7 +123,7 @@ class HttpIrTvAccessory {
             .catch((e) => this.platform.log.error(e));
         // you must call the callback function
         callback(null);
-        setTimeout(() => this.verifyPowerChange(value), 3000);
+        setTimeout(() => this.verifyPowerChange(value), 10000);
     }
     async verifyPowerChange(expectedPowerState) {
         const listenerId = `temp-listener--power-expectation--${new Date().getTime()}-${Math.random()}`;
