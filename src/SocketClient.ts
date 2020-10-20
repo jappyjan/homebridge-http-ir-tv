@@ -4,7 +4,7 @@ import {Logger} from 'homebridge';
 export default class SocketClient {
     private client: WssClient | null = null;
     private connection: WssConnection | null = null;
-    private listeners: Array<{id: string; callback: (msg: string) => any}> = [];
+    private listeners: Array<{id: string; callback: (msg: string) => unknown}> = [];
 
     constructor(
         private readonly sockeHost: string,
@@ -56,7 +56,7 @@ export default class SocketClient {
       this.client.connect(wssServerAddress);
     }
 
-    public addMessageListener(listenerId: string, callback: (msg: string) => any) {
+    public addMessageListener(listenerId: string, callback: (msg: string) => unknown) {
       this.listeners.push({id: listenerId, callback});
     }
 
