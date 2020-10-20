@@ -49,14 +49,6 @@ class HttpIrTvAccessory {
             this.platform.log.debug('Updating Television Active State:', state);
             this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, state);
         });
-        /*
-          let isActive = false;
-          setInterval(() => {
-            isActive = !isActive;
-  
-            this.platform.log.debug('Triggering television active state:', isActive);
-            this.televisionService.updateCharacteristic(this.platform.Characteristic.Active, isActive);
-          }, 10000);*/
     }
     configureMetaCharacteristics() {
         this.accessory.getService(this.platform.Service.AccessoryInformation)
@@ -116,7 +108,8 @@ class HttpIrTvAccessory {
         if (value === this.platform.Characteristic.VolumeSelector.DECREMENT) {
             command = this.device.codes.volume.down;
         }
-        this.socketClient.sendCommand('IR-SEND', command).catch((e) => this.platform.log.error(e));
+        this.socketClient.sendCommand('IR-SEND', command)
+            .catch((e) => this.platform.log.error(e));
         this.platform.log.debug('Sending code: ' + command);
         callback(null);
     }
@@ -149,7 +142,8 @@ class HttpIrTvAccessory {
             callback(new Error(`Remote-Key ${value} not configured`));
             return;
         }
-        this.socketClient.sendCommand('IR-SEND', command).catch((e) => this.platform.log.error(e));
+        this.socketClient.sendCommand('IR-SEND', command)
+            .catch((e) => this.platform.log.error(e));
         callback(null);
     }
 }

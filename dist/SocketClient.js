@@ -21,7 +21,11 @@ class SocketClient {
             this.logger.debug('Adding connection listeners...');
             this.connection.on('error', (error) => {
                 this.logger.error('WSS Connection Error');
-                throw error;
+                this.logger.error(error.message);
+                this.connection.close();
+                setTimeout(() => {
+                    this.connect();
+                }, 1000);
             });
             this.connection.on('close', () => {
                 this.logger.debug('Socket Connection closed by Server');
@@ -36,7 +40,10 @@ class SocketClient {
         });
         this.client.on('connectFailed', (err) => {
             this.logger.error('WSS Connection failed!');
-            throw err;
+            this.logger.error(err.message);
+            setTimeout(() => {
+                this.connect();
+            }, 1000);
         });
         this.logger.debug('Connecting to Socket Server...');
         const wssServerAddress = `ws://${this.sockeHost}:${this.socketPort}`;

@@ -10,6 +10,10 @@ import {
 import {HttpIrTvPlugin} from './HttpIrTvPlugin';
 import SocketClient from './SocketClient';
 
+enum SOCKET_COMMANDS {
+    RECEIVING_POWER_STATE = 'POWER_STATE;',
+}
+
 export interface TelevisionDevice {
     'name': string;
     'tv-manufacturer': string;
@@ -101,7 +105,7 @@ export class HttpIrTvAccessory {
         this.socketClient.addMessageListener('POWER_STATE', (msg) => {
           this.platform.log.debug('received message');
           this.platform.log.debug(msg);
-          if (!msg.startsWith('POWER_STATE;')) {
+          if (!msg.startsWith(SOCKET_COMMANDS.RECEIVING_POWER_STATE)) {
             return;
           }
 
@@ -236,6 +240,28 @@ export class HttpIrTvAccessory {
         .catch((e) => this.platform.log.error(e));
       // you must call the callback function
       callback(null);
+
+      setTimeout(() => this.verifyPowerChange(value as boolean), 3000);
+    }
+
+    async verifyPowerChange(expectedPowerState: boolean) {
+      const listenerId = `temp-listener--power-expectation--${new Date().getTime()}-${Math.random()}`;
+      const currentPowerState = await new Promise((resolve) => {
+        this.socketClient.addMessageListener(listenerId, (msg: string) => {
+          if (!msg.startsWith(SOCKET_COMMANDS.RECEIVING_POWER_STATE)) {
+            return;
+          }
+
+          const [, stateString] = msg.split(';');
+          const state = stateString === 'on';
+          resolve(state);
+        });
+      });
+
+      if (currentPowerState !== expectedPowerState) {
+        this.socketClient.sendCommand('IR-SEND', this.device.codes.power)
+          .catch((e) => this.platform.log.error(e));
+      }
     }
 
     onRemoteKeyPress(value: CharacteristicValue, callback: CharacteristicSetCallback) {

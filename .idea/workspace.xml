@@ -21,11 +21,13 @@
   <component name="ChangeListManager">
     <list default="true" id="f563ce23-2ee8-4970-ab6d-103db4c305da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/SocketClient.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/SocketClient.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/HttpIrTvAccessory.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/HttpIrTvAccessory.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/HttpIrTvAccessory.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/SocketClient.d.ts.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/SocketClient.d.ts.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/SocketClient.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/SocketClient.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/SocketClient.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/SocketClient.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/HttpIrTvAccessory.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/HttpIrTvAccessory.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SocketClient.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/SocketClient.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +70,9 @@
       <workItem from="1602879679785" duration="27505000" />
       <workItem from="1603128506691" duration="14000" />
       <workItem from="1603178237347" duration="688000" />
-      <workItem from="1603207203340" duration="990000" />
+      <workItem from="1603207203340" duration="1261000" />
+      <workItem from="1603215673640" duration="58000" />
+      <workItem from="1603221562170" duration="405000" />
     </task>
     <servers />
   </component>
