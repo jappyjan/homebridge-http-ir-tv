@@ -1,6 +1,5 @@
 import {client as WssClient, connection as WssConnection} from 'websocket';
 import {Logger} from 'homebridge';
-import EventEmitter from 'events';
 
 export default class SocketClient {
     private client: WssClient | null = null;
