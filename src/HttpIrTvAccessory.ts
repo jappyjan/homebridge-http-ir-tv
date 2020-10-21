@@ -237,39 +237,13 @@ export class HttpIrTvAccessory {
       this.platform.log.debug('Set Characteristic On ->', value);
 
       this.socketClient.sendCommand('IR-SEND', this.device.codes.power)
-        .catch((e) => this.platform.log.error(e));
-
-      const listenerId = `temp-listener--power-expectation--${new Date().getTime()}-${Math.random()}`;
-      let timedOut = false;
-      const timeoutIdentifier = setTimeout(() => {
-        timedOut = true;
-        callback(new Error('Timeout'));
-      }, 20000);
-
-      const currentPowerState = await new Promise((resolve) => {
-        this.socketClient.addMessageListener(listenerId, (msg: string) => {
-          if (!msg.startsWith(SOCKET_COMMANDS.RECEIVING_POWER_STATE)) {
-            return;
-          }
-
-          const [, stateString] = msg.split(';');
-          const state = stateString === 'on';
-          resolve(state);
+        .then(() => {
+          callback(null);
+        })
+        .catch((e) => {
+          this.platform.log.error(e);
+          callback(e);
         });
-      });
-
-      clearTimeout(timeoutIdentifier);
-      if (timedOut) {
-        return;
-      }
-
-      if (currentPowerState !== value) {
-        await this.onPowerTogglePress(value, (err) => {
-          callback(err);
-        });
-      } else {
-        callback(null);
-      }
     }
 
     onRemoteKeyPress(value: CharacteristicValue, callback: CharacteristicSetCallback) {
@@ -277,7 +251,7 @@ export class HttpIrTvAccessory {
 
       if (
         !this.device.codes.keys ||
-        !this.configuredRemoteKeys.find((item) => item === value)
+            !this.configuredRemoteKeys.find((item) => item === value)
       ) {
         this.platform.log.error(`Remote Key ${value} not configured in this.configuredRemoteKeys`);
         this.platform.log.debug(JSON.stringify(this.configuredRemoteKeys, null, 4));

@@ -16,7 +16,7 @@ export default class SocketClient {
       this.connect();
     }
 
-    private connect() {
+    private connect(callback?: (err?: Error) => void) {
       this.client = new WssClient();
 
       this.client.on('connect', (connection: WssConnection) => {
@@ -48,9 +48,17 @@ export default class SocketClient {
 
           this.handleMessage(message.utf8Data as string);
         });
+
+        if (callback) {
+          callback();
+        }
       });
 
       this.client.on('connectFailed', (err) => {
+        if (callback) {
+          callback(err);
+        }
+
         this.logger.error('WSS Connection failed!');
         this.logger.error(err.message);
 
@@ -90,7 +98,14 @@ export default class SocketClient {
 
       return new Promise((resolve, reject) => {
         if (!this.connection) {
-          throw new Error('No connection available...');
+          this.connect((err) => {
+            if (err) {
+              throw new Error('No connection available');
+            }
+
+            return this.sendCommand(command, payload);
+          });
+          return;
         }
 
         this.connection.send(`${command};${payload}`, (err) => {
